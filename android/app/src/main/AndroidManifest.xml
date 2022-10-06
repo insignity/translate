@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aiarsien.translate">
-   <application
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
         android:label="translate"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
