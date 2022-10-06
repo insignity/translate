@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:translate/models/data.dart';
 import 'package:translate/service_locator.dart';
 
 part 'translate_store.g.dart';
@@ -62,5 +64,24 @@ abstract class _TranslateStore with Store {
   @action
   String? nextString(int page) {
     return _list[page];
+  }
+
+  @action
+  Future<String> getTranslate(String text) async {
+    final body = jsonEncode({"q": text,
+      "target": "ru",
+      "source": "en"});
+    const uri =
+        'https://deep-translate1.p.rapidapi.com/language/translate/v2';
+    final result = await http.post(Uri.parse(uri),
+        headers: {
+          'content-type': 'application/json',
+          'X-RapidAPI-Key': 'bc66470ff3msh5d9a8bc58090646p13a8dajsnfe840ab0a68f',
+          'X-RapidAPI-Host': 'deep-translate1.p.rapidapi.com'
+        },
+        body: body);
+    final json = jsonDecode(result.body);
+    final data = Data.fromJson(json);
+    return data.translations.translatedText.text;
   }
 }

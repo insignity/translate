@@ -67,6 +67,14 @@ mixin _$TranslateStore on _TranslateStore, Store {
     });
   }
 
+  late final _$getTranslateAsyncAction =
+      AsyncAction('_TranslateStore.getTranslate', context: context);
+
+  @override
+  Future<String> getTranslate(String text) {
+    return _$getTranslateAsyncAction.run(() => super.getTranslate(text));
+  }
+
   late final _$_TranslateStoreActionController =
       ActionController(name: '_TranslateStore', context: context);
 

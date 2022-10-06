@@ -10,16 +10,11 @@ import 'package:translator/translator.dart';
 class TranslateText extends StatelessWidget {
   const TranslateText({Key? key}) : super(key: key);
 
-  Future openDialog(BuildContext context) => showDialog(
-        context: context,
-        builder: (context) => Container(
-          height: 100,
-          width: 100,
-          color: AppColors.orange,
-        ),
-      );
-
-  List<TextSpan> splitMapJoin(BuildContext context, String text) {
+  List<TextSpan> splitMapJoin(
+    BuildContext context,
+    String text,
+    TranslateStore store,
+  ) {
     final List<TextSpan> result = [];
     text.splitMapJoin(
       RegExp('\\w+'),
@@ -33,15 +28,13 @@ class TranslateText extends StatelessWidget {
                   final offsetDx = details.globalPosition.dx;
                   final offsetDy = details.globalPosition.dy;
 
-                  GoogleTranslator()
-                      .translate(matchStr, from: 'en', to: 'ru')
-                      .then((value) {
+                  store.getTranslate(matchStr).then((value) {
                     showDialog(
                       context: context,
                       anchorPoint: Offset(offsetDx, offsetDy),
                       barrierColor: AppColors.grey20.withAlpha(100),
                       builder: (context) => Center(
-                        child: _localDialogBuilder(context, value.text),
+                        child: _localDialogBuilder(context, value),
                       ),
                     );
                   });
@@ -68,7 +61,7 @@ class TranslateText extends StatelessWidget {
     return Observer(builder: (context) {
       return RichText(
         text: TextSpan(
-          children: splitMapJoin(context, store.nextString(store.page)!),
+          children: splitMapJoin(context, store.nextString(store.page)!, store),
           style: Theme.of(context).textTheme.caption,
         ),
       );
